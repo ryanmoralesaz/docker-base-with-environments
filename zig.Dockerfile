@@ -8,5 +8,7 @@ RUN wget -q https://ziglang.org/download/0.12.0/zig-linux-x86_64-0.12.0.tar.xz \
     && ln -s /opt/zig/zig /usr/local/bin/zig \
     && rm zig-linux-x86_64-0.12.0.tar.xz
 
-# Keep container running with zsh
+# Create a directory for Zig projects
+RUN mkdir -p /workspace/zig-projects
+
 CMD ["zsh"]
