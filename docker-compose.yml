@@ -1,0 +1,61 @@
+services:
+  # Base service (optional - mainly for building the base image)
+  base:
+    build:
+      context: .
+      dockerfile: base.Dockerfile
+    image: myproject/base:latest
+    command: echo "Base image built successfully"
+
+  # Zig development environment
+  zig-dev:
+    build:
+      context: .
+      dockerfile: zig.Dockerfile
+    image: myproject/zig:latest
+    container_name: zig-development
+    volumes:
+      # Mount current directory to /workspace in container
+      - .:/workspace
+      # Mount your dotfiles
+      - ${HOME}/.vimrc:/root/.vimrc:ro
+      - ${HOME}/.zshrc:/root/.zshrc:ro
+      - ${HOME}/.tmux.conf:/root/.tmux.conf:ro
+      # Zig-specific workspace
+      - ./zig-projects:/workspace/zig-projects
+    ports:
+      - "8080:8080"     # Web servers
+      - "3000:3000"     # React dev server
+    stdin_open: true
+    tty: true
+    working_dir: /workspace/zig-projects
+
+  # Java development environment
+  java-dev:
+    build:
+      context: .
+      dockerfile: java.Dockerfile
+    image: myproject/java:latest
+    container_name: java-development
+    volumes:
+      # Mount current directory to /workspace in container
+      - .:/workspace
+      # Mount your dotfiles
+      - ${HOME}/.vimrc:/root/.vimrc:ro
+      - ${HOME}/.zshrc:/root/.zshrc:ro
+      - ${HOME}/.tmux.conf:/root/.tmux.conf:ro
+      # Java-specific workspace
+      - ./java-projects:/workspace/java-projects
+      # Maven cache to speed up builds
+      - maven-cache:/root/.m2
+    ports:
+      - "8081:8080"     # Spring Boot default
+      - "9000:9000"     # Debug port
+    stdin_open: true
+    tty: true
+    working_dir: /workspace/java-projects
+    environment:
+      - MAVEN_OPTS=-Xmx512m
+
+volumes:
+  maven-cache:

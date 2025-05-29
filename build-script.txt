@@ -1,0 +1,14 @@
+# First time setup
+make build-all
+
+# Work on Java data structures
+make up-java
+# You're now in the Java container
+cd /workspace/java-projects/data-structures
+mvn compile
+mvn test
+
+# Switch to Zig development
+exit  # Exit Java container
+make up-zig
+# You're now in the Zig container
